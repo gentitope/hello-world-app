@@ -21,6 +21,10 @@ spec:
         - name: mongodb
           image: docker.io/mongo:4.2
           env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: root
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: adminpassword
           resources:
             limits:
               cpu: 1
