@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: hello-world-app
-          image: gentitope/hello-world-app:__IMAGE_TAG__
+          image: gentitope/hello-world-app:IMAGE_TAG
           ports:
             - name: http-port
               containerPort: 80
