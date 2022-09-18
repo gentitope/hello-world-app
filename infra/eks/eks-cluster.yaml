@@ -1,0 +1,45 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: eks-cluster
+  region: eu-central-1
+  version: "1.22"
+
+iam:
+  withOIDC: true
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]
+    logRetentionInDays: 90
+
+nodeGroups:
+  - name: default-node-group
+    labels:
+      nodegroup-type: default-workload
+      instance-lifecycle: Ondemand
+    tags:
+      role: kubernetes
+    #specify that actual instance type will be one of instance types defined in instancesDistribution section
+    instanceType: mixed
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 2
+    instancesDistribution:
+      instanceTypes:
+        - m5.xlarge
+        - r4.large
+      onDemandBaseCapacity: 0
+      onDemandPercentageAboveBaseCapacity: 100
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+    ssh:
+      allow: true # will use ~/.ssh/id_rsa.pub as the default ssh key

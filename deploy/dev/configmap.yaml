@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-world-app-configmap
+  namespace: dev
+data:
+  DB_NAME: hello_world
