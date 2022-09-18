@@ -22,7 +22,7 @@ spec:
           image: gentitope/hello-world-app:IMAGE_TAG
           ports:
             - name: http-port
-              containerPort: 80
+              containerPort: 5005
               protocol: TCP
           env:
             - name: MONGODB_URI
@@ -55,12 +55,12 @@ spec:
           livenessProbe:
             httpGet:
               path: /ping
-              port: 80
+              port: 5005
               scheme: HTTP
           readinessProbe:
             httpGet:
               path: /ping
-              port: 80
+              port: 5005
               scheme: HTTP
           imagePullPolicy: IfNotPresent
       restartPolicy: Always
