@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dotnet-core-api
+  name: hello-world-app
   namespace: dev
   labels:
-    app.kubernetes.io/name: dotnet-core-api
-    service: dotnet-core-api
-    app: dotnet-core-api
+    app.kubernetes.io/name: hello-world-app
+    service: hello-world-app
+    app: hello-world-app
 spec:
   ports:
     - name: http
@@ -14,7 +14,7 @@ spec:
       port: 80
       targetPort: http-port
   selector:
-    app.kubernetes.io/name: dotnet-core-api
-    service: dotnet-core-api
-    app: dotnet-core-api
+    app.kubernetes.io/name: hello-world-app
+    service: hello-world-app
+    app: hello-world-app
   type: ClusterIP
