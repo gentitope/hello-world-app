@@ -59,7 +59,7 @@ jobs:
           replacements: 'IMAGE_TAG=${{ env.IMAGE_TAG }}'
 
       - name: Update kube config
-        run: aws eks update-kubeconfig --name eks-cluster --region eu-central-1
+        run: aws eks update-kubeconfig --name eks-cluster --region eu-west-1
 
       - name: Deploy image to Amazon EKS
         run: |
