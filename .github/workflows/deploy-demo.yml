@@ -2,7 +2,7 @@ name: CICD
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ demo ]
 
 jobs:
 
@@ -43,10 +43,19 @@ jobs:
           tags: gentitope/hello-world-app:${{ env.IMAGE_TAG }}
           file: deploy/Dockerfile
 
+      - name: Vilicus Scan
+        uses: edersonbrilhante/vilicus-github-action@main
+        with:
+          image: gentitope/hello-world-app:${{ env.IMAGE_TAG }}
+      - name: Upload results to github security
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: artifacts/results.sarif
+
       - name: Replace Image Tag in YAML deployment
         uses: datamonsters/replace-action@v2
         with:
-          files: deploy/dev/deployment.yaml
+          files: deploy/demo/deployment.yaml
           replacements: 'IMAGE_TAG=${{ env.IMAGE_TAG }}'
 
       - name: Update kube config
@@ -54,7 +63,7 @@ jobs:
 
       - name: Deploy image to Amazon EKS
         run: |
-          kubectl apply -f deploy/dev/deployment.yaml
-          kubectl apply -f deploy/dev/svc.yaml
-          kubectl apply -f deploy/dev/configmap.yaml
-          kubectl apply -f deploy/dev/secret.yaml
+          kubectl apply -f deploy/demo/deployment.yaml
+          kubectl apply -f deploy/demo/svc.yaml
+          kubectl apply -f deploy/demo/configmap.yaml
+          kubectl apply -f deploy/demo/secret.yaml

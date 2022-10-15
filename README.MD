@@ -10,7 +10,7 @@ APP GitRepo: [https://github.com/gentitope/hello-world-app.git](https://github.c
 
 To create an application to run on AWS, which upon receiving a HTTP GET /
 request will connect to a database, fetch a “Hello World” string from it and return it as a reply to
-the requester. This application needs to support two distinct infrastructure environments: dev and
+the requester. This application needs to support two distinct infrastructure environments: demo and
 prod.
 
 
@@ -22,7 +22,7 @@ prod.
 * Kubectl Command
 * Eksctl Command
 * Infra Directory contains eks cluster create config file and k8s mongodb manifest files
-* Deploy Directory contains k8s manifest files for dev and prod with Dockerfile
+* Deploy Directory contains k8s manifest files for demo with Dockerfile
 
 
 Run the following command to setup the environment
@@ -35,35 +35,24 @@ eksctl create cluster -f eks-cluster.yaml
 
 Run the following command to create mongodb in the cluster
 
-**For dev env
+**For demo env
 ```
-cd infra/mongodb/dev
-kubectl create namespace dev
+cd infra/mongodb/demo
+kubectl create namespace demo
 kubectl apply -f .
-kubectl get pod -n dev
-```
-**For prod env
-```
-cd infra/mongodb/prod
-kubectl create namespace prod
-kubectl apply -f .
-kubectl get pod -n prod
-```
-Run the following command to import mongodb collection
-
-**For dev env
-```
-kubectl cp greetings.json dev/mongodb-0:/data
-kubectl -n dev exec mongodb-0 -- mongoimport --username root --password adminpassword --authenticationDatabase admin --db hello_world --collection greetings --file /data/greetings.json --jsonArray
+kubectl get pod -n demo
 ```
 
 Run the following command to import mongodb collection
 
-**For prod env
+**For demo env
 ```
-kubectl cp greetings.json prod/mongodb-0:/data
-kubectl -n prod exec mongodb-0 -- mongoimport --username root --password adminpassword --authenticationDatabase admin --db hello_world --collection greetings --file /data/greetings.json --jsonArray
+kubectl cp greetings.json demo/mongodb-0:/data
+kubectl -n demo exec mongodb-0 -- mongoimport --username root --password adminpassword --authenticationDatabase admin --db hello_world --collection greetings --file /data/greetings.json --jsonArray
 ```
+
+Run the following command to import mongodb collection
+
 
 CICD
 
@@ -75,25 +64,18 @@ The cicd uses github action workflow pipelines to build and deploy to EKS Cluste
     - AWS_SECRET_ACCESS_KEY
     - DOCKERHUB_TOKEN
     - DOCKERHUB_USERNAME
-  * Developer pushes
+  * developer pushes
   * Docker Image build and push to Docker registry
   * Kubectl apply k8s deployment manifest files
 
 To Test that it is running
 
-**For dev env
+**For demo env
 
 ```
-kubectl get pod -n dev
-kubectl get svc -n dev
-kubectl port-forward service/hello-world-app 5005:80 -n dev
-```
-
-**For prod env
-```
-kubectl get pod -n prod
-kubectl get svc -n prod
-kubectl port-forward service/hello-world-app 5005:80 -n prod
+kubectl get pod -n demo
+kubectl get svc -n demo
+kubectl port-forward service/hello-world-app 5005:80 -n demo
 ```
 
 Point to the browser
