@@ -20,6 +20,12 @@ commonRoutes.route('/health').get(async function (_req, res) {
     });
 });
 
+commonRoutes.route('/api').get(async function (_req, res) {
+    res.json({
+        "name": "Taj Bank"
+    });
+});
+
 
 
 
