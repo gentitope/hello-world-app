@@ -7,13 +7,13 @@ on:
 jobs:
 
   deploy:
-    name: Build image
+    name: build image and deploy application
     runs-on: ubuntu-latest
     env:
       IMAGE_TAG: ${{ github.run_number }}
 
     steps:
-      - name: Check out code
+      - name: checkout repo
         uses: actions/checkout@v2
 
       - name: Install kubectl
@@ -22,20 +22,20 @@ jobs:
           version: 'v1.24.2'
         id: install
 
-      - name: Configure AWS credentials
+      - name: configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: Login to DockerHub
+      - name: login to dockerhub registry
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: build and push image to registry
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -53,20 +53,20 @@ jobs:
 #        with:
 #          sarif_file: artifacts/results.sarif
 
-      - name: Run Trivy vulnerability scanner
+      - name: run trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: gentitope/hello-world-app:${{ env.IMAGE_TAG }}
+          image-ref: python:3.4-alpine
           format: 'sarif'
           output: 'trivy-results.sarif'
 
-      - name: Upload Trivy scan results to GitHub Security tab
+      - name: upload trivy scan results to gitHub security tab
         uses: github/codeql-action/upload-sarif@v2
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
 
-      - name: Replace Image Tag in YAML deployment
+      - name: replace image tag with latest in deployment file
         uses: datamonsters/replace-action@v2
         with:
           files: deploy/demo/deployment.yaml
@@ -75,7 +75,7 @@ jobs:
       - name: Update kube config
         run: aws eks update-kubeconfig --name eks-cluster --region eu-west-1
 
-      - name: Deploy image to Amazon EKS
+      - name: deploy application to amazon eks
         run: |
           kubectl apply -f deploy/demo/deployment.yaml
           kubectl apply -f deploy/demo/svc.yaml
