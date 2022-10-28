@@ -56,6 +56,8 @@ Run the following command to import mongodb collection
 
 CICD
 
+- GitHub Actions is a continuous integration and continuous delivery (CI/CD) platform that allows to automate build, test and deploy.
+
 The cicd uses github action workflow pipelines to build and deploy to EKS Cluster
 
 ** Actions To Be Taken:
