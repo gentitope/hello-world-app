@@ -32,6 +32,12 @@ commonRoutes.route('/code').get(async function (_req, res) {
     });
 });
 
+commonRoutes.route('/code').get(async function (_req, res) {
+    res.json({
+        "BVN": "2354367489494"
+    });
+});
+
 
 
 
